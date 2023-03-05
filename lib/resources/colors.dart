@@ -5,3 +5,5 @@ const Color appBarColor = Color(0xff2C363F);
 const Color screenColor = Colors.white;
 const MaterialColor darkThemeSwatch = Colors.teal;
 const MaterialColor lightThemeSwatch = Colors.blueGrey;
+const Color counterDarkColor = Colors.black54;
+const Color counterLightColor = Colors.black54;

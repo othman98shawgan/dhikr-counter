@@ -1,3 +1,4 @@
+import 'package:dhikr_counter/services/theme_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -42,8 +43,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DikhrNotifier>(
-      builder: (context, dikhr, _) => Scaffold(
+    return Consumer2<DikhrNotifier, ThemeNotifier>(
+      builder: (context, dikhr, theme, _) => Scaffold(
         appBar: AppBar(
           title: const Text('Counter'),
           actions: [
@@ -71,15 +72,15 @@ class _HomePageState extends State<HomePage> {
           }),
           child: Center(
             child: SizedBox(
-              height: MediaQuery.of(context).size.width * 0.6,
-              width: MediaQuery.of(context).size.width * 0.95,
+              height: MediaQuery.of(context).size.width * 0.5,
+              width: MediaQuery.of(context).size.width * 0.85,
               child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                  color: Colors.black54,
+                decoration:  BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                  color: theme.getTheme() == theme.darkTheme? Colors.black54:Color.fromARGB(120, 96, 125, 139),
                 ),
                 child: Center(
-                  child: Text('$_counter', style: Theme.of(context).textTheme.headline1),
+                  child: Text(_counter.toString().padLeft(4, '0'), style: Theme.of(context).textTheme.headline1),
                 ),
               ),
             ),

@@ -11,20 +11,20 @@ class ThemeNotifier with ChangeNotifier {
     brightness: Brightness.dark,
     // backgroundColor: const Color(0xFF212121),
     // dividerColor: Colors.black12,
-    // focusColor: darkThemeSwatch,
-    // colorScheme: ColorScheme.fromSwatch(primarySwatch: darkThemeSwatch).copyWith(
-    //   secondary: Colors.white,
-    //   brightness: Brightness.dark,
-    // ),
+    focusColor: darkThemeSwatch,
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: darkThemeSwatch).copyWith(
+      secondary: Colors.white,
+      brightness: Brightness.dark,
+    ),
   );
 
   final lightTheme = ThemeData(
     appBarTheme: const AppBarTheme(backgroundColor: appBarColor, foregroundColor: Colors.white),
     primaryColor: Colors.white,
     brightness: Brightness.light,
-    scaffoldBackgroundColor: backgroudColor,
-    dialogBackgroundColor: backgroudColor,
-    dividerColor: Colors.white54,
+    // scaffoldBackgroundColor: backgroudColor,
+    // dialogBackgroundColor: backgroudColor,
+    dividerColor: Colors.white,
     focusColor: lightThemeSwatch,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: lightThemeSwatch).copyWith(
       secondary: Colors.black,
