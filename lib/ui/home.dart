@@ -1,7 +1,11 @@
+import 'package:dhikr_counter/services/theme_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:provider/provider.dart';
 
+import '../services/dikhr_service.dart';
+import '../services/store_manager.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,63 +16,104 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  late int _counter;
+  double _bigFontSize = 112;
+  double _smallFontSize = 96;
+  late double _currnetFontSize;
 
-  void _incrementCounter() {
+  void _incrementCounter(DikhrNotifier dikhr) {
     setState(() {
       _counter++;
     });
-    if (_counter % 10 != 0) {
-      Vibrate.feedback(FeedbackType.medium);
+    StorageManager.saveData('Counter', _counter);
+    if(_counter>=10000){
+      setState(() {
+        _currnetFontSize= _smallFontSize;
+      });
+    }
+    if (_counter % dikhr.getDikhrTarget() != 0) {
+      //vibrate on tap
+      if (dikhr.getVibrateOnTap()) {
+        Vibrate.feedback(FeedbackType.medium);
+      }
     } else {
-      Vibrate.feedback(FeedbackType.heavy);
+      //vibrate on target reach
+      if (dikhr.getVibrateOnCountTarget()) {
+        Vibrate.feedback(FeedbackType.warning);
+      }
     }
   }
 
   void _resetCounter() async {
-    Vibrate.feedback(FeedbackType.warning);
+    Vibrate.feedback(FeedbackType.error);
     setState(() {
       _counter = 0;
+      _currnetFontSize = _bigFontSize;
+      StorageManager.saveData('Counter', _counter);
+    });
+  }
+
+  Future<Null> getSharedPrefs() async {
+    StorageManager.readData('Counter').then((value) {
+      setState(() {
+        _counter = value ?? 0;
+      });
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    _counter = 0;
+    _currnetFontSize = _bigFontSize;
+    getSharedPrefs();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Counter'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: 'Settings',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(
-                    title: 'Settings Page',
+    return Consumer2<DikhrNotifier, ThemeNotifier>(
+      builder: (context, dikhr, theme, _) => Scaffold(
+        appBar: AppBar(
+          title: const Text('Counter'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              tooltip: 'Settings',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsPage(
+                      title: 'Settings Page',
+                    ),
                   ),
+                );
+              },
+            ),
+          ],
+        ),
+        body: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onLongPress: _resetCounter,
+          onTap: (() {
+            _incrementCounter(dikhr);
+          }),
+          child: Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width * 0.5,
+              width: MediaQuery.of(context).size.width * 0.85,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                  color: theme.getTheme() == theme.darkTheme
+                      ? Colors.black54
+                      : Color.fromARGB(120, 96, 125, 139),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onLongPress: _resetCounter,
-        onTap: _incrementCounter,
-        child: Center(
-          child: SizedBox(
-            height: MediaQuery.of(context).size.width * 0.6,
-            width: MediaQuery.of(context).size.width * 0.95,
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                color: Colors.black54,
-              ),
-              child: Center(
-                child: Text('$_counter', style: Theme.of(context).textTheme.headline1),
+                child: Center(
+                  child: Text(
+                    _counter.toString().padLeft(4, '0'),
+                    style: Theme.of(context).textTheme.headline1?.merge(TextStyle(fontSize: _currnetFontSize))),                    
+                ),
               ),
             ),
           ),
