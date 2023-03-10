@@ -5,6 +5,7 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 
 import '../services/dikhr_service.dart';
+import '../services/store_manager.dart';
 import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,12 +16,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  late int _counter;
 
   void _incrementCounter(DikhrNotifier dikhr) {
     setState(() {
       _counter++;
     });
+    StorageManager.saveData('Counter', _counter);
+
     if (_counter % dikhr.getDikhrTarget() != 0) {
       //vibrate on tap
       if (dikhr.getVibrateOnTap()) {
@@ -38,7 +41,23 @@ class _HomePageState extends State<HomePage> {
     Vibrate.feedback(FeedbackType.error);
     setState(() {
       _counter = 0;
+      StorageManager.saveData('Counter', _counter);
     });
+  }
+
+  Future<Null> getSharedPrefs() async {
+    StorageManager.readData('Counter').then((value) {
+      setState(() {
+        _counter = value ?? 0;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _counter = 0;
+    getSharedPrefs();
   }
 
   @override
@@ -75,12 +94,15 @@ class _HomePageState extends State<HomePage> {
               height: MediaQuery.of(context).size.width * 0.5,
               width: MediaQuery.of(context).size.width * 0.85,
               child: Container(
-                decoration:  BoxDecoration(
+                decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                  color: theme.getTheme() == theme.darkTheme? Colors.black54:Color.fromARGB(120, 96, 125, 139),
+                  color: theme.getTheme() == theme.darkTheme
+                      ? Colors.black54
+                      : Color.fromARGB(120, 96, 125, 139),
                 ),
                 child: Center(
-                  child: Text(_counter.toString().padLeft(4, '0'), style: Theme.of(context).textTheme.headline1),
+                  child: Text(_counter.toString().padLeft(4, '0'),
+                      style: Theme.of(context).textTheme.headline1),
                 ),
               ),
             ),
