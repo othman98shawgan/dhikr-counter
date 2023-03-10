@@ -2,7 +2,7 @@
     package="com.example.dhikr_counter">
    <uses-permission android:name="android.permission.VIBRATE"/>
    <application
-        android:label="Dhikr - Easy Counter"
+        android:label="Dhikr Counter"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
