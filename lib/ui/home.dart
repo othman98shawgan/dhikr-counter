@@ -17,13 +17,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late int _counter;
+  double _bigFontSize = 112;
+  double _smallFontSize = 96;
+  late double _currnetFontSize;
 
   void _incrementCounter(DikhrNotifier dikhr) {
     setState(() {
       _counter++;
     });
     StorageManager.saveData('Counter', _counter);
-
+    if(_counter>=10000){
+      setState(() {
+        _currnetFontSize= _smallFontSize;
+      });
+    }
     if (_counter % dikhr.getDikhrTarget() != 0) {
       //vibrate on tap
       if (dikhr.getVibrateOnTap()) {
@@ -41,6 +48,7 @@ class _HomePageState extends State<HomePage> {
     Vibrate.feedback(FeedbackType.error);
     setState(() {
       _counter = 0;
+      _currnetFontSize = _bigFontSize;
       StorageManager.saveData('Counter', _counter);
     });
   }
@@ -57,6 +65,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _counter = 0;
+    _currnetFontSize = _bigFontSize;
     getSharedPrefs();
   }
 
@@ -101,8 +110,9 @@ class _HomePageState extends State<HomePage> {
                       : Color.fromARGB(120, 96, 125, 139),
                 ),
                 child: Center(
-                  child: Text(_counter.toString().padLeft(4, '0'),
-                      style: Theme.of(context).textTheme.headline1),
+                  child: Text(
+                    _counter.toString().padLeft(4, '0'),
+                    style: Theme.of(context).textTheme.headline1?.merge(TextStyle(fontSize: _currnetFontSize))),                    
                 ),
               ),
             ),
