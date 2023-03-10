@@ -26,9 +26,9 @@ class _HomePageState extends State<HomePage> {
       _counter++;
     });
     StorageManager.saveData('Counter', _counter);
-    if(_counter>=10000){
+    if (_counter >= 10000) {
       setState(() {
-        _currnetFontSize= _smallFontSize;
+        _currnetFontSize = _smallFontSize;
       });
     }
     if (_counter % dikhr.getDikhrTarget() != 0) {
@@ -77,6 +77,11 @@ class _HomePageState extends State<HomePage> {
           title: const Text('Counter'),
           actions: [
             IconButton(
+              icon: const Icon(Icons.refresh),
+              tooltip: 'Reset Count',
+              onPressed: _resetCounter,
+            ),
+            IconButton(
               icon: const Icon(Icons.settings),
               tooltip: 'Settings',
               onPressed: () {
@@ -110,9 +115,11 @@ class _HomePageState extends State<HomePage> {
                       : Color.fromARGB(120, 96, 125, 139),
                 ),
                 child: Center(
-                  child: Text(
-                    _counter.toString().padLeft(4, '0'),
-                    style: Theme.of(context).textTheme.headline1?.merge(TextStyle(fontSize: _currnetFontSize))),                    
+                  child: Text(_counter.toString().padLeft(4, '0'),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline1
+                          ?.merge(TextStyle(fontSize: _currnetFontSize))),
                 ),
               ),
             ),
