@@ -12,10 +12,10 @@ class ThemeNotifier with ChangeNotifier {
     // backgroundColor: const Color(0xFF212121),
     // dividerColor: Colors.black12,
     focusColor: darkThemeSwatch,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: darkThemeSwatch).copyWith(
-      secondary: Colors.white,
-      brightness: Brightness.dark,
-    ),
+    // colorScheme: ColorScheme.fromSwatch(primarySwatch: darkThemeSwatch).copyWith(
+    //   secondary: Colors.white,
+    //   brightness: Brightness.dark,
+    // ),
   );
 
   final lightTheme = ThemeData(
