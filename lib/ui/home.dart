@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:dhikr_counter/services/theme_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_android_volume_keydown/flutter_android_volume_keydown.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   double _bigFontSize = 112;
   double _smallFontSize = 96;
   late double _currnetFontSize;
+  StreamSubscription<HardwareButton>? subscription;
 
   void _incrementCounter(DikhrNotifier dikhr) {
     setState(() {
@@ -61,12 +65,31 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void startListening() {
+    subscription = FlutterAndroidVolumeKeydown.stream.listen((event) {
+      if (event == HardwareButton.volume_down || event == HardwareButton.volume_up) {
+        _incrementCounter(Provider.of<DikhrNotifier>(context, listen: false));
+      }
+    });
+  }
+
+  void stopListening() {
+    subscription?.cancel();
+  }
+
   @override
   void initState() {
     super.initState();
     _counter = 0;
     _currnetFontSize = _bigFontSize;
     getSharedPrefs();
+    startListening();
+  }
+
+  @override
+  void dispose() {
+    stopListening();
+    super.dispose();
   }
 
   @override
