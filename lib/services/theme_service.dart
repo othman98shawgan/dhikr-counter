@@ -12,6 +12,7 @@ class ThemeNotifier with ChangeNotifier {
     // backgroundColor: const Color(0xFF212121),
     // dividerColor: Colors.black12,
     focusColor: darkThemeSwatch,
+    toggleableActiveColor: darkThemeSwatch,
     // colorScheme: ColorScheme.fromSwatch(primarySwatch: darkThemeSwatch).copyWith(
     //   secondary: Colors.white,
     //   brightness: Brightness.dark,
@@ -26,6 +27,7 @@ class ThemeNotifier with ChangeNotifier {
     // dialogBackgroundColor: backgroudColor,
     dividerColor: Colors.white,
     focusColor: lightThemeSwatch,
+    toggleableActiveColor: lightThemeSwatch,
     colorScheme: ColorScheme.fromSwatch(primarySwatch: lightThemeSwatch).copyWith(
       secondary: Colors.black,
       brightness: Brightness.light,
