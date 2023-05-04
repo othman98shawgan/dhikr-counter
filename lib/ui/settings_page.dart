@@ -46,29 +46,35 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsSection(
                 title: const Text('Vibration'),
                 tiles: [
-                  SettingsTile.switchTile(
-                    title: const Text('Vibrate on each Tap'),
+                  SettingsTile(
+                    title: const Text('Tap Vibration'),
+                    description: const Text('Vibrate on each Tap'),
                     leading: const Icon(Icons.vibration),
-                    initialValue: dikhr.getVibrateOnTap(),
-                    onToggle: (value) {
-                      if (value) {
-                        dikhr.enableVibrateOnTap();
-                      } else {
-                        dikhr.disableVibrateOnTap();
-                      }
-                    },
+                    trailing: Checkbox(
+                      value: dikhr.getVibrateOnTap(),
+                      onChanged: (bool? value) {
+                        if (value == true) {
+                          dikhr.enableVibrateOnTap();
+                        } else {
+                          dikhr.disableVibrateOnTap();
+                        }
+                      },
+                    ),
                   ),
-                  SettingsTile.switchTile(
-                    title: const Text('Vibrate on reaching Target'),
+                  SettingsTile(
+                    title: const Text('Target Vibration'),
+                    description: const Text('Vibrate on reaching Target'),
                     leading: const Icon(Icons.vibration),
-                    initialValue: dikhr.getVibrateOnCountTarget(),
-                    onToggle: (value) {
-                      if (value) {
-                        dikhr.enableVibrateOnCountTarget();
-                      } else {
-                        dikhr.disableVibrateOnCountTarget();
-                      }
-                    },
+                    trailing: Checkbox(
+                      value: dikhr.getVibrateOnCountTarget(),
+                      onChanged: (bool? value) {
+                        if (value == true) {
+                          dikhr.enableVibrateOnCountTarget();
+                        } else {
+                          dikhr.disableVibrateOnCountTarget();
+                        }
+                      },
+                    ),
                   ),
                   SettingsTile.navigation(
                     enabled: dikhr.getVibrateOnCountTarget(),
