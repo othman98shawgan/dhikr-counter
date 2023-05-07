@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_android_volume_keydown/flutter_android_volume_keydown.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock/wakelock.dart';
 
 import '../services/dikhr_service.dart';
 import '../services/store_manager.dart';
@@ -66,6 +67,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void startListening() {
+    Wakelock.enable();
     subscription = FlutterAndroidVolumeKeydown.stream.listen((event) {
       if (event == HardwareButton.volume_down || event == HardwareButton.volume_up) {
         _incrementCounter(Provider.of<DikhrNotifier>(context, listen: false));
