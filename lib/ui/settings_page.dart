@@ -63,7 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   SettingsTile(
                     title: const Text('Target Vibration'),
-                    description: const Text('Vibrate on reaching Target'),
+                    description: const Text('Vibrate on finishing Cycle'),
                     leading: const Icon(Icons.vibration),
                     trailing: Checkbox(
                       value: dikhr.getVibrateOnCountTarget(),
@@ -79,8 +79,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   SettingsTile.navigation(
                     enabled: dikhr.getVibrateOnCountTarget(),
                     leading: const Icon(Icons.track_changes),
-                    title: const Text('Target'),
-                    value: Text('Current target is: ${dikhr.getDikhrTarget()}'),
+                    title: const Text('Cycle'),
+                    value: Text('Current Cycle is: ${dikhr.getDikhrTarget()}'),
                     onPressed: (context) {
                       showRoundToDialog(context, dikhr.getDikhrTarget());
                     },

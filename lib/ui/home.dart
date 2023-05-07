@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
     return Consumer2<DikhrNotifier, ThemeNotifier>(
       builder: (context, dikhr, theme, _) => Scaffold(
         appBar: AppBar(
-          title: const Text('Counter'),
+          title: const Text('Tasbeeh Counter'),
           actions: [
             IconButton(
               icon: const Icon(Icons.refresh),
