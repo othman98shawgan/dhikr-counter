@@ -4,13 +4,14 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-import '../resources/colors.dart';
+import '../services/store_manager.dart';
 import '../services/theme_service.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key, required this.title});
+  const SettingsPage({super.key, this.count, this.updateCount});
 
-  final String title;
+  final int? count;
+  final Function? updateCount;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -23,7 +24,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (context, theme, dikhr, child) => Center(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.title),
+            title: Text('Settings'),
           ),
           body: SettingsList(
             sections: [
@@ -40,6 +41,15 @@ class _SettingsPageState extends State<SettingsPage> {
                       } else {
                         theme.setLightMode();
                       }
+                    },
+                  ),
+                  SettingsTile.navigation(
+                    enabled: dikhr.getVibrateOnCountTarget(),
+                    leading: const Icon(Icons.onetwothree),
+                    title: const Text('Set Counter'),
+                    trailing: const Icon(Icons.navigate_next_rounded),
+                    onPressed: (context) {
+                      showSetCounterDialog(context, widget.count!, widget.updateCount!);
                     },
                   ),
                 ],
@@ -81,6 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     enabled: dikhr.getVibrateOnCountTarget(),
                     leading: const Icon(Icons.track_changes),
                     title: const Text('Cycle'),
+                    trailing: const Icon(Icons.navigate_next_rounded),
                     value: Text('Current Cycle is: ${dikhr.getDikhrTarget()}'),
                     onPressed: (context) {
                       showCycleDialog(context, dikhr.getDikhrTarget());
@@ -99,7 +110,6 @@ class _SettingsPageState extends State<SettingsPage> {
 showCycleDialog(BuildContext context, int cycle) async {
   int currentCycle = cycle;
   final _textFieldController = TextEditingController();
-  bool _validate = false;
 
   var confirmMethod = (() {
     Navigator.pop(context);
@@ -138,6 +148,61 @@ showCycleDialog(BuildContext context, int cycle) async {
 
             controller: _textFieldController,
             decoration: InputDecoration(hintText: "Tasbeeh cycle length"),
+          ),
+        );
+      }));
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
+
+showSetCounterDialog(BuildContext context, int count, Function updateCount) async {
+  int currentCount = count;
+  final _textFieldController = TextEditingController();
+  _textFieldController.text = count.toString();
+
+  var confirmMethod = (() {
+    Navigator.pop(context);
+    if (currentCount != -1) {
+      StorageManager.saveData('Counter', currentCount);
+      updateCount(currentCount);
+    }
+  });
+
+  AlertDialog alert = AlertDialog(
+      title: const Text("Set Counter"),
+      contentPadding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
+      actions: [
+        ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+        TextButton(
+          onPressed: confirmMethod,
+          child: const Text('Confirm'),
+        ),
+      ],
+      content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+          child: TextField(
+            onChanged: (value) {
+              setState(() {
+                if (value == '') {
+                  currentCount = -1;
+                } else {
+                  currentCount = int.parse(value);
+                }
+              });
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ], // Only numbers can be entered
+
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Tasbeeh count"),
           ),
         );
       }));
