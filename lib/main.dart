@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'services/dikhr_service.dart';
 import 'services/theme_service.dart';
+import 'services/view_service.dart';
 import 'ui/home.dart';
 import 'ui/settings_page.dart';
 
@@ -13,6 +14,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (context) => DikhrNotifier()),
         ChangeNotifierProvider(create: (context) => ThemeNotifier()),
+        ChangeNotifierProvider(create: (context) => ViewNotifier()),
       ],
       child: const MyApp(),
     ),
