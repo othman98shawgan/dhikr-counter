@@ -1,5 +1,6 @@
 import 'package:dhikr_counter/services/dikhr_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -82,7 +83,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: const Text('Cycle'),
                     value: Text('Current Cycle is: ${dikhr.getDikhrTarget()}'),
                     onPressed: (context) {
-                      showRoundToDialog(context, dikhr.getDikhrTarget());
+                      showCycleDialog(context, dikhr.getDikhrTarget());
                     },
                   ),
                 ],
@@ -95,18 +96,21 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-showRoundToDialog(BuildContext context, int target) async {
-  int currentTarget = target;
+showCycleDialog(BuildContext context, int cycle) async {
+  int currentCycle = cycle;
+  final _textFieldController = TextEditingController();
+  bool _validate = false;
 
   var confirmMethod = (() {
     Navigator.pop(context);
-    Provider.of<DikhrNotifier>(context, listen: false).setDikhrCount(currentTarget);
+    if (currentCycle != -1) {
+      Provider.of<DikhrNotifier>(context, listen: false).setDikhrCount(currentCycle);
+    }
   });
 
   AlertDialog alert = AlertDialog(
-      title: const Text("Counter target"),
-      // titlePadding: const EdgeInsets.fromLTRB(8.0, 10.0, 8.0, 0),
-      contentPadding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 24.0),
+      title: const Text("Counter cycle"),
+      contentPadding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
       actions: [
         ElevatedButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
         TextButton(
@@ -115,42 +119,27 @@ showRoundToDialog(BuildContext context, int target) async {
         ),
       ],
       content: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
-        return Column(mainAxisSize: MainAxisSize.min, children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 20.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RadioListTile(
-                    contentPadding: EdgeInsets.zero,
-                    visualDensity: const VisualDensity(
-                        horizontal: VisualDensity.minimumDensity,
-                        vertical: VisualDensity.minimumDensity),
-                    value: 33,
-                    title: const Text('33'),
-                    groupValue: currentTarget,
-                    onChanged: (val) {
-                      setState(() {
-                        currentTarget = val ?? 0;
-                      });
-                    }),
-                RadioListTile(
-                    contentPadding: EdgeInsets.zero,
-                    visualDensity: const VisualDensity(
-                        horizontal: VisualDensity.minimumDensity,
-                        vertical: VisualDensity.minimumDensity),
-                    value: 100,
-                    title: const Text('100'),
-                    groupValue: currentTarget,
-                    onChanged: (val) {
-                      setState(() {
-                        currentTarget = val ?? 0;
-                      });
-                    }),
-              ],
-            ),
+        return Padding(
+          padding: const EdgeInsets.only(left: 24.0, right: 24.0),
+          child: TextField(
+            onChanged: (value) {
+              setState(() {
+                if (value == '') {
+                  currentCycle = -1;
+                } else {
+                  currentCycle = int.parse(value);
+                }
+              });
+            },
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ], // Only numbers can be entered
+
+            controller: _textFieldController,
+            decoration: InputDecoration(hintText: "Tasbeeh cycle length"),
           ),
-        ]);
+        );
       }));
 
   showDialog(
