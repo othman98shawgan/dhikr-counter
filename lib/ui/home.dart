@@ -79,6 +79,12 @@ class _HomePageState extends State<HomePage> {
     subscription?.cancel();
   }
 
+  updateCount(int newCount) {
+    setState(() {
+      _counter = newCount;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -113,8 +119,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SettingsPage(
-                      title: 'Settings Page',
+                    builder: (context) => SettingsPage(
+                      count: _counter,
+                      updateCount: updateCount,
                     ),
                   ),
                 );
