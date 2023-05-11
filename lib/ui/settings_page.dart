@@ -44,6 +44,26 @@ class _SettingsPageState extends State<SettingsPage> {
                       }
                     },
                   ),
+                  SettingsTile(
+                    title: const Text('Total view'),
+                    description: const Text('Counter will show cycle count'),
+                    leading: const Icon(Icons.view_carousel),
+                    trailing: Checkbox(
+                      value: view.getView(),
+                      onChanged: (bool? value) {
+                        if (value == true) {
+                          view.enableTotalView();
+                        } else {
+                          view.disableTotalView();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SettingsSection(
+                title: const Text('Counter'),
+                tiles: [
                   SettingsTile.navigation(
                     leading: const Icon(Icons.clear_all),
                     title: const Text('Clear total count'),
@@ -60,20 +80,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       showSetCounterDialog(context, widget.count!, widget.updateCount!);
                     },
                   ),
-                  SettingsTile(
-                    title: const Text('Total view'),
-                    description: const Text('Counter will show cycle count'),
-                    leading: const Icon(Icons.view_carousel),
-                    trailing: Checkbox(
-                      value: view.getView(),
-                      onChanged: (bool? value) {
-                        if (value == true) {
-                          view.enableTotalView();
-                        } else {
-                          view.disableTotalView();
-                        }
-                      },
-                    ),
+                  SettingsTile.navigation(
+                    leading: const Icon(Icons.track_changes),
+                    title: const Text('Cycle'),
+                    trailing: const Icon(Icons.navigate_next_rounded),
+                    value: Text('Current Cycle is: ${dikhr.getDikhrTarget()}'),
+                    onPressed: (context) {
+                      showCycleDialog(context, dikhr.getDikhrTarget());
+                    },
                   ),
                 ],
               ),
@@ -109,16 +123,6 @@ class _SettingsPageState extends State<SettingsPage> {
                         }
                       },
                     ),
-                  ),
-                  SettingsTile.navigation(
-                    enabled: dikhr.getVibrateOnCountTarget(),
-                    leading: const Icon(Icons.track_changes),
-                    title: const Text('Cycle'),
-                    trailing: const Icon(Icons.navigate_next_rounded),
-                    value: Text('Current Cycle is: ${dikhr.getDikhrTarget()}'),
-                    onPressed: (context) {
-                      showCycleDialog(context, dikhr.getDikhrTarget());
-                    },
                   ),
                 ],
               ),
