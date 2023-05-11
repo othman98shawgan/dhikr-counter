@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:dhikr_counter/resources/colors.dart';
 import 'package:dhikr_counter/services/theme_service.dart';
+import 'package:dhikr_counter/services/view_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_android_volume_keydown/flutter_android_volume_keydown.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -21,6 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late int _counter;
+  late int _cycle;
   double _bigFontSize = 112;
   double _smallFontSize = 96;
   late double _currnetFontSize;
@@ -29,8 +33,8 @@ class _HomePageState extends State<HomePage> {
   void _incrementCounter(DikhrNotifier dikhr) {
     setState(() {
       _counter++;
+      _cycle++;
     });
-    StorageManager.saveData('Counter', _counter);
     if (_counter >= 10000) {
       setState(() {
         _currnetFontSize = _smallFontSize;
@@ -43,18 +47,27 @@ class _HomePageState extends State<HomePage> {
       }
     } else {
       //vibrate on target reach
+      _cycle = 0;
       if (dikhr.getVibrateOnCountTarget()) {
         Vibrate.feedback(FeedbackType.warning);
       }
     }
+    StorageManager.saveData('Counter', _counter);
+    StorageManager.saveData('Cycle', _cycle);
   }
 
   void _resetCounter() async {
     Vibrate.feedback(FeedbackType.error);
+    var showTotalView = Provider.of<ViewNotifier>(context, listen: false).showTotalView;
     setState(() {
-      _counter = 0;
+      if (showTotalView) {
+        _cycle = 0;
+        StorageManager.saveData('Cycle', _cycle);
+      } else {
+        _counter = 0;
+        StorageManager.saveData('Counter', _counter);
+      }
       _currnetFontSize = _bigFontSize;
-      StorageManager.saveData('Counter', _counter);
     });
   }
 
@@ -62,6 +75,11 @@ class _HomePageState extends State<HomePage> {
     StorageManager.readData('Counter').then((value) {
       setState(() {
         _counter = value ?? 0;
+      });
+    });
+    StorageManager.readData('Cycle').then((value) {
+      setState(() {
+        _cycle = value ?? 0;
       });
     });
   }
@@ -89,6 +107,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _counter = 0;
+    _cycle = 0;
     _currnetFontSize = _bigFontSize;
     getSharedPrefs();
     startListening();
@@ -102,8 +121,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<DikhrNotifier, ThemeNotifier>(
-      builder: (context, dikhr, theme, _) => Scaffold(
+    double width = MediaQuery.of(context).size.width;
+    double heightWithToolbar = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).viewPadding;
+    double height = heightWithToolbar - padding.top - kToolbarHeight;
+
+    return Consumer3<DikhrNotifier, ThemeNotifier, ViewNotifier>(
+      builder: (context, dikhr, theme, view, _) => Scaffold(
         appBar: AppBar(
           title: const Text('Tasbeeh Counter'),
           actions: [
@@ -135,29 +159,98 @@ class _HomePageState extends State<HomePage> {
           onTap: (() {
             _incrementCounter(dikhr);
           }),
+          child: view.showTotalView
+              ? totalView(dikhr, theme)
+              : counterView(dikhr, theme), //chose view based on ViewNotifier
+        ),
+      ),
+    );
+  }
+
+  Widget counterView(DikhrNotifier dikhr, ThemeNotifier theme) {
+    double width = MediaQuery.of(context).size.width;
+    double heightWithToolbar = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).viewPadding;
+    double height = heightWithToolbar - padding.top - kToolbarHeight;
+
+    return Center(
+      child: SizedBox(
+        height: height * 0.25,
+        width: width * 0.85,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+            color: theme.getTheme() == theme.darkTheme
+                ? Colors.black54
+                : Color.fromARGB(120, 96, 125, 139),
+          ),
           child: Center(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.width * 0.5,
-              width: MediaQuery.of(context).size.width * 0.85,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                  color: theme.getTheme() == theme.darkTheme
-                      ? Colors.black54
-                      : Color.fromARGB(120, 96, 125, 139),
-                ),
-                child: Center(
-                  child: Text(_counter.toString().padLeft(4, '0'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline1
-                          ?.merge(TextStyle(fontSize: _currnetFontSize))),
-                ),
+            child: Text(_counter.toString().padLeft(4, '0'),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline1
+                    ?.merge(TextStyle(fontSize: _currnetFontSize))),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget totalView(DikhrNotifier dikhr, ThemeNotifier theme) {
+    double width = MediaQuery.of(context).size.width;
+    double heightWithToolbar = MediaQuery.of(context).size.height;
+    var padding = MediaQuery.of(context).viewPadding;
+    double height = heightWithToolbar - padding.top - kToolbarHeight;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox(
+          height: height * 0.375,
+        ),
+        Center(
+          child: SizedBox(
+            height: height * 0.25,
+            width: width * 0.75,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                color: theme.getTheme() == theme.darkTheme
+                    ? Colors.black54
+                    : Color.fromARGB(120, 96, 125, 139),
+              ),
+              child: Center(
+                child: Text(_cycle.toString(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline1
+                        ?.merge(TextStyle(fontSize: _currnetFontSize))),
               ),
             ),
           ),
         ),
-      ),
+        SizedBox(
+          height: height * 0.075,
+        ),
+        SizedBox(
+            height: height * 0.3,
+            width: width * 0.8,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Total Tasbeeh: ',
+                  style: GoogleFonts.robotoMono(
+                      textStyle: TextStyle(fontSize: 16, color: Colors.grey.shade400)),
+                ),
+                Text(
+                  '$_counter',
+                  style: GoogleFonts.robotoMono(
+                      textStyle: TextStyle(fontSize: 16, color: Colors.grey.shade200)),
+                ),
+              ],
+            )),
+      ],
     );
   }
 }
