@@ -4,43 +4,36 @@ import '../resources/colors.dart';
 import 'store_manager.dart';
 
 class ThemeNotifier with ChangeNotifier {
-  late ThemeData _themeData = darkTheme;
-  ThemeData getTheme() => _themeData;
+  ThemeData? _themeData;
+  ThemeData? get themeData => _themeData;
 
-  late String _currTheme = 'dark';
-  String getThemeStr() => _currTheme;
+  ThemeMode? _themeMode;
+  ThemeMode? get themeMode => _themeMode;
 
-  ThemeNotifier() {
-    StorageManager.readData('themeMode').then((value) {
-      if (kDebugMode) {
-        print('value read from storage: $value');
-      }
-      var themeMode = value ?? 'dark';
-      if (themeMode == 'light') {
-        _themeData = lightTheme;
-        _currTheme = 'light';
-      } else {
-        if (kDebugMode) {
-          print('setting dark theme');
-        }
-        _themeData = darkTheme;
-        _currTheme = 'dark';
-      }
-      notifyListeners();
-    });
+  ThemeNotifier(ThemeMode themeMode) {
+    if (themeMode == ThemeMode.light) {
+      _themeData = lightTheme;
+      _themeMode = ThemeMode.light;
+    } else {
+      _themeData = darkTheme;
+      _themeMode = ThemeMode.dark;      
+    }
+    notifyListeners();
   }
 
   void setDarkMode() async {
     _themeData = darkTheme;
-    _currTheme = 'dark';
+    _themeMode = ThemeMode.dark;
     StorageManager.saveData('themeMode', 'dark');
+    StorageManager.saveData('isDark', true);
     notifyListeners();
   }
 
   void setLightMode() async {
     _themeData = lightTheme;
-    _currTheme = 'light';
+    _themeMode = ThemeMode.light;
     StorageManager.saveData('themeMode', 'light');
+    StorageManager.saveData('isDark', false);
     notifyListeners();
   }
 
