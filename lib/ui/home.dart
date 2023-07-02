@@ -180,9 +180,7 @@ class _HomePageState extends State<HomePage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-            color: theme.getTheme() == theme.darkTheme
-                ? Colors.black54
-                : Color.fromARGB(120, 96, 125, 139),
+            color: theme.getTheme() == theme.darkTheme ? Colors.black54 : color3.withOpacity(0.5),
           ),
           child: Center(
             child: Text(_counter.toString().padLeft(4, '0'),
@@ -215,9 +213,8 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                color: theme.getTheme() == theme.darkTheme
-                    ? Colors.black54
-                    : Color.fromARGB(120, 96, 125, 139),
+                color:
+                    theme.getTheme() == theme.darkTheme ? Colors.black54 : color3.withOpacity(0.5),
               ),
               child: Center(
                 child: Text(_cycle.toString(),
