@@ -4,7 +4,6 @@ import 'package:dhikr_counter/resources/colors.dart';
 import 'package:dhikr_counter/services/theme_service.dart';
 import 'package:dhikr_counter/services/view_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_android_volume_keydown/flutter_android_volume_keydown.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -121,11 +120,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double heightWithToolbar = MediaQuery.of(context).size.height;
-    var padding = MediaQuery.of(context).viewPadding;
-    double height = heightWithToolbar - padding.top - kToolbarHeight;
-
     return Consumer3<DikhrNotifier, ThemeNotifier, ViewNotifier>(
       builder: (context, dikhr, theme, view, _) => Scaffold(
         appBar: AppBar(
@@ -186,7 +180,7 @@ class _HomePageState extends State<HomePage> {
             child: Text(_counter.toString().padLeft(4, '0'),
                 style: Theme.of(context)
                     .textTheme
-                    .headline1
+                    .displayLarge
                     ?.merge(TextStyle(fontSize: _currnetFontSize))),
           ),
         ),
@@ -213,14 +207,13 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-                color:
-                    theme.themeMode == ThemeMode.dark ? Colors.black54 : color3.withOpacity(0.5),
+                color: theme.themeMode == ThemeMode.dark ? Colors.black54 : color3.withOpacity(0.5),
               ),
               child: Center(
                 child: Text(_cycle.toString(),
                     style: Theme.of(context)
                         .textTheme
-                        .headline1
+                        .displayLarge
                         ?.merge(TextStyle(fontSize: _currnetFontSize))),
               ),
             ),
@@ -238,12 +231,18 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   'Total Tasbeeh: ',
                   style: GoogleFonts.robotoMono(
-                      textStyle: TextStyle(fontSize: 16, color: Colors.grey.shade400)),
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          color:
+                              theme.themeMode == ThemeMode.dark ? Colors.grey.shade400 : color2)),
                 ),
                 Text(
                   '$_counter',
                   style: GoogleFonts.robotoMono(
-                      textStyle: TextStyle(fontSize: 16, color: Colors.grey.shade200)),
+                      textStyle: TextStyle(
+                          fontSize: 16,
+                          color:
+                              theme.themeMode == ThemeMode.dark ? Colors.grey.shade200 : color4)),
                 ),
               ],
             )),
