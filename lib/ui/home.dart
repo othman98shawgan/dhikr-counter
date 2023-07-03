@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dhikr_counter/resources/colors.dart';
 import 'package:dhikr_counter/services/theme_service.dart';
 import 'package:dhikr_counter/services/view_service.dart';
+import 'package:dhikr_counter/services/volume_key_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_android_volume_keydown/flutter_android_volume_keydown.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -84,10 +85,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void startListening() {
-    Wakelock.enable();
     subscription = FlutterAndroidVolumeKeydown.stream.listen((event) {
       if (event == HardwareButton.volume_down || event == HardwareButton.volume_up) {
-        _incrementCounter(Provider.of<DikhrNotifier>(context, listen: false));
+        if (Provider.of<VolumeKeyTasbeehNotifier>(context, listen: false).volumeKeyTasbeeh) {
+          _incrementCounter(Provider.of<DikhrNotifier>(context, listen: false));
+        }
       }
     });
   }
@@ -105,6 +107,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    Wakelock.enable();
     _counter = 0;
     _cycle = 0;
     _currnetFontSize = _bigFontSize;
@@ -233,8 +236,9 @@ class _HomePageState extends State<HomePage> {
                   style: GoogleFonts.robotoMono(
                       textStyle: TextStyle(
                           fontSize: 16,
-                          color:
-                              theme.themeMode == ThemeMode.dark ? Colors.grey.shade400 : greenMaterialColor.shade400)),
+                          color: theme.themeMode == ThemeMode.dark
+                              ? Colors.grey.shade400
+                              : greenMaterialColor.shade400)),
                 ),
                 Text(
                   '$_counter',

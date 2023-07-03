@@ -1,5 +1,6 @@
 import 'package:dhikr_counter/services/dikhr_service.dart';
 import 'package:dhikr_counter/services/view_service.dart';
+import 'package:dhikr_counter/services/volume_key_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +22,8 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Consumer3<ThemeNotifier, DikhrNotifier, ViewNotifier>(
-      builder: (context, theme, dikhr, view, child) => Center(
+    return Consumer4<ThemeNotifier, DikhrNotifier, ViewNotifier, VolumeKeyTasbeehNotifier>(
+      builder: (context, theme, dikhr, view, volumeKey, child) => Center(
         child: Scaffold(
           appBar: AppBar(
             title: Text('Settings'),
@@ -55,6 +56,21 @@ class _SettingsPageState extends State<SettingsPage> {
                           view.enableTotalView();
                         } else {
                           view.disableTotalView();
+                        }
+                      },
+                    ),
+                  ),
+                  SettingsTile(
+                    title: const Text('Volume Key Tasbeeh'),
+                    description: const Text('Volume up/down adds tasbeeh'),
+                    leading: const Icon(Icons.volume_up),
+                    trailing: Checkbox(
+                      value: volumeKey.volumeKeyTasbeeh,
+                      onChanged: (bool? value) {
+                        if (value == true) {
+                          volumeKey.enableVolumeKeyTasbeeh();
+                        } else {
+                          volumeKey.disableVolumeKeyTasbeeh();
                         }
                       },
                     ),
