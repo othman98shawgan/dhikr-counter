@@ -1,4 +1,5 @@
 import 'package:dhikr_counter/services/store_manager.dart';
+import 'package:dhikr_counter/services/volume_key_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +24,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => DikhrNotifier()),
           ChangeNotifierProvider(create: (context) => ThemeNotifier(themeMode)),
           ChangeNotifierProvider(create: (context) => ViewNotifier()),
+          ChangeNotifierProvider(create: (context) => VolumeKeyTasbeehNotifier()),
         ],
         child: const MyApp(),
       ),
