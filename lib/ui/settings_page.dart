@@ -35,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   SettingsTile.switchTile(
                     title: const Text('Dark Mode'),
                     leading: const Icon(Icons.dark_mode_outlined),
-                    initialValue: theme.getTheme() == theme.darkTheme,
+                    initialValue: theme.themeMode == ThemeMode.dark,
                     onToggle: (value) {
                       if (value) {
                         theme.setDarkMode();

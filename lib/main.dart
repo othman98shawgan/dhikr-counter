@@ -1,3 +1,4 @@
+import 'package:dhikr_counter/services/store_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,16 +10,24 @@ import 'ui/settings_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => DikhrNotifier()),
-        ChangeNotifierProvider(create: (context) => ThemeNotifier()),
-        ChangeNotifierProvider(create: (context) => ViewNotifier()),
-      ],
-      child: const MyApp(),
-    ),
-  );
+
+  StorageManager.init().then((value) {
+    var prefs = value;
+
+    //Theme
+    var isDark = StorageManager.readDataFromPrefs('isDark', prefs) ?? true;
+    ThemeMode themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => DikhrNotifier()),
+          ChangeNotifierProvider(create: (context) => ThemeNotifier(themeMode)),
+          ChangeNotifierProvider(create: (context) => ViewNotifier()),
+        ],
+        child: const MyApp(),
+      ),
+    );
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +39,7 @@ class MyApp extends StatelessWidget {
         builder: (context, theme, _) => MaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Alfajr',
-              theme: theme.getTheme(),
+              theme: theme.themeData,
               initialRoute: '/home',
               routes: {
                 '/home': (context) => const HomePage(),
