@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                       textStyle: TextStyle(
                           fontSize: 16,
                           color:
-                              theme.themeMode == ThemeMode.dark ? Colors.grey.shade400 : color2)),
+                              theme.themeMode == ThemeMode.dark ? Colors.grey.shade400 : greenMaterialColor.shade400)),
                 ),
                 Text(
                   '$_counter',
