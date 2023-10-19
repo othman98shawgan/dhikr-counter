@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
             color: theme.themeMode == ThemeMode.dark ? Colors.black54 : color3.withOpacity(0.5),
           ),
           child: Center(
-            child: Text(_counter.toString().padLeft(4, '0'),
+            child: Text(_counter.toString(),
                 style: Theme.of(context)
                     .textTheme
                     .displayLarge
