@@ -44,6 +44,7 @@ dependencies:
   flutter_android_volume_keydown: ^1.0.0
   wakelock: ^0.6.2
   google_fonts: ^4.0.4
+  vibration: ^1.7.7
 
 dev_dependencies:
   flutter_test:

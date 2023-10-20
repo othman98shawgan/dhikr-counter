@@ -6,7 +6,7 @@ import 'package:dhikr_counter/services/view_service.dart';
 import 'package:dhikr_counter/services/volume_key_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_android_volume_keydown/flutter_android_volume_keydown.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:vibration/vibration.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
@@ -43,13 +43,13 @@ class _HomePageState extends State<HomePage> {
     if (_counter % dikhr.getDikhrTarget() != 0) {
       //vibrate on tap
       if (dikhr.getVibrateOnTap()) {
-        Vibrate.feedback(FeedbackType.medium);
+        Vibration.vibrate(duration: 50, amplitude: 50);
       }
     } else {
       //vibrate on target reach
       _cycle = 0;
       if (dikhr.getVibrateOnCountTarget()) {
-        Vibrate.feedback(FeedbackType.warning);
+        Vibration.vibrate(duration: 200, amplitude: 128);
       }
     }
     StorageManager.saveData('Counter', _counter);
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _resetCounter() async {
-    Vibrate.feedback(FeedbackType.error);
+    Vibration.vibrate(duration: 400);
     var showTotalView = Provider.of<ViewNotifier>(context, listen: false).showTotalView;
     setState(() {
       if (showTotalView) {
