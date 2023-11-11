@@ -45,6 +45,7 @@ dependencies:
   wakelock: ^0.6.2
   google_fonts: ^4.0.4
   vibration: ^1.7.7
+  in_app_update: ^4.0.1
 
 dev_dependencies:
   flutter_test:
