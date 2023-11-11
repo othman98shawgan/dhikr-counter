@@ -10,7 +10,9 @@ import 'package:vibration/vibration.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:in_app_update/in_app_update.dart';
 
+import '../services/utils.dart';
 import '../services/dikhr_service.dart';
 import '../services/store_manager.dart';
 import 'settings_page.dart';
@@ -104,9 +106,28 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> checkForUpdate() async {
+    InAppUpdate.checkForUpdate().then((info) {
+      if (info.updateAvailability == UpdateAvailability.updateAvailable) {
+        InAppUpdate.startFlexibleUpdate().then((_) {
+          InAppUpdate.completeFlexibleUpdate().then((_) {
+            printSnackBar("Success!", context);
+          }).catchError((e) {
+            printSnackBar(e.toString(), context);
+          });
+        }).catchError((e) {
+          printSnackBar(e.toString(), context);
+        });
+      }
+    }).catchError((e) {
+      printSnackBar(e.toString(), context);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    checkForUpdate();
     Wakelock.enable();
     _counter = 0;
     _cycle = 0;
